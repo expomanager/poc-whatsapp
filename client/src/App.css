@@ -1,0 +1,14 @@
+.App {
+  padding-top: 100px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ffffff;
+  gap: 20px;
+}
+.web {
+  background-color: #313d55;
+  height: 100vh;
+  width: 100%;
+}
