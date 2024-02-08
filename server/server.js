@@ -2,9 +2,64 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 app.use(express.json());
+
+const token = process.env.TOKEN
 app.get('/api', (req, res) => {
     res.json({ "users": ["user1", "user2", "user3"] })
 })
+// to verify the callback url from dashboard side - cloud api side
+app.get("/webhook", (req, res) => {
+    const mode = req.query['hub.mode'];
+    const token = req.query['hub.verify_token'];
+    const challenge = req.query['hub.challenge'];
+
+    const mytoken = process.env.VERIFY_TOKEN;
+
+    if (mode && token) {
+        if (mode === 'subscribe' && token === mytoken) {
+            console.log('WEBHOOK_VERIFIED');
+            res.status(200).send(challenge);
+        } else {
+            res.sendStatus(403);
+        }
+    }
+})
+
+app.post('/webhook', async function(req, res) {
+    const body = req.body
+    console.log(JSON.stringify(body,null,2))
+    if(body.object) {
+        if(body.entry && body.entry[0].changes && body.entry[0].changes[0].value.messages && body.entry[0].changes[0].value.messages[0].type === "button") {
+            const phone_no_id = body.entry[0].changes[0].value.metadata.phone_number_id
+            const from = body.entry[0].changes[0].value.messages[0].from
+            const msg_body = body.entry[0].changes[0].value.messages[0].button.text
+            if (msg_body === "OK") {
+                fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+                    },
+                    body: JSON.stringify(
+                        {
+                            "messaging_product": "whatsapp",
+                            "to": from,
+                            "type": "template",
+                            "template": {
+                                "name": 'welcome_expo',
+                                "language": {
+                                    "code": "es_AR"
+                                },
+                            },
+                        })
+                })
+            }
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+});
 
 app.post('/wppmessage', async function (req, res) {
     const telefono = req.body.telefono  
@@ -22,25 +77,50 @@ app.post('/wppmessage', async function (req, res) {
                 "to": `54${telefono}`,
                 "type": "template",
                 "template": {
-                    "name": 'welcome_expo',
+                    "name": 'welcome_expo_2',
                     "language": {
                         "code": "es_AR"
-                    }
+                    },
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": `${name}`
+                                }
+                            ]
+                        }
+                    ]
                 },
-                // "components": [
-                //     {
-                //         "type": "body",
-                //         "parameters": [
-                //             {
-                //                 "type": "text",
-                //                 "text": 'Uriel'
-                //             }
-                //         ]
-                //     }
-                // ]
             })
     })
     res.json({ "message": "Mensaje enviado" })
+})
+
+app.get('/template', async function (req, res) {
+    await fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER}/message_templates`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+        body: JSON.stringify(
+            {
+                "name": "welcome_expo_3",
+                "category": "MARKETING",
+                "allow_category_change": true,
+                "language": "es_AR",
+                "components": [
+                    {
+                        "type": "body",
+                        "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
+                    }
+                ]
+            }
+        )
+    })
+    res.json({ "message": "Template creado" })
 })
 
 app.listen(5000, () => {
