@@ -61,10 +61,11 @@ app.post('/webhook', async function(req, res) {
     }
 });
 
+
 app.post('/wppmessage', async function (req, res) {
     const telefono = req.body.telefono  
     const name = req.body.name
-
+    // Envío de un mensaje template (plantilla) a un número de teléfono
     await fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER}/messages`, {
         method: 'POST',
         headers: {
@@ -95,11 +96,8 @@ app.post('/wppmessage', async function (req, res) {
                 },
             })
     })
-    res.json({ "message": "Mensaje enviado" })
-})
-
-app.get('/template', async function (req, res) {
-    await fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER}/message_templates`, {
+    // Ejemplo de creacion de un template - Plantilla
+    await fetch(`https://graph.facebook.com/v19.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -107,20 +105,20 @@ app.get('/template', async function (req, res) {
         },
         body: JSON.stringify(
             {
-                "name": "welcome_expo_3",
-                "category": "MARKETING",
+                "name": "prueba_template",
+                "category": "UTILITY",
                 "allow_category_change": true,
                 "language": "es_AR",
                 "components": [
                     {
-                        "type": "body",
+                        "type": "BODY",
                         "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         )
     })
-    res.json({ "message": "Template creado" })
+    res.json({ "message": "Mensaje enviado" })
 })
 
 app.listen(5000, () => {
