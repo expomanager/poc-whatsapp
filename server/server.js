@@ -97,27 +97,27 @@ app.post('/wppmessage', async function (req, res) {
             })
     })
     // Ejemplo de creacion de un template - Plantilla
-    await fetch(`https://graph.facebook.com/v19.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
-        },
-        body: JSON.stringify(
-            {
-                "name": "prueba_template",
-                "category": "UTILITY",
-                "allow_category_change": true,
-                "language": "es_AR",
-                "components": [
-                    {
-                        "type": "BODY",
-                        "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
-                    },
-                ],
-            },
-        )
-    })
+    // await fetch(`https://graph.facebook.com/v19.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates`, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+    //     },
+    //     body: JSON.stringify(
+    //         {
+    //             "name": "prueba_template",
+    //             "category": "UTILITY",
+    //             "allow_category_change": true,
+    //             "language": "es_AR",
+    //             "components": [
+    //                 {
+    //                     "type": "BODY",
+    //                     "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
+    //                 },
+    //             ],
+    //         },
+    //     )
+    // })
     res.json({ "message": "Mensaje enviado" })
 })
 

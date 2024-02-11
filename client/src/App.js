@@ -2,7 +2,6 @@ import './App.css';
 import React from 'react';
 
 function App() {
-  // const [backendData, setBackendData] = useState([{}]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -17,10 +16,6 @@ function App() {
       })
     })
   }
-  // useEffect(() => {
-  //   fetch("/api").then(response => response.json()).then(data => setBackendData(data));
-  //   console.log(backendData);
-  // }, [])
 
   return (
     <div className='web'>
