@@ -61,6 +61,58 @@ app.post('/webhook', async function(req, res) {
     }
 });
 
+app.get('/gettemplates', async function (req, res) {
+    // Obtener plantillas de mensajes
+    const response = await fetch(`https://graph.facebook.com/v18.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates?fields=name,status,components`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+    })
+    const data = await response.json()
+    console.log(data)
+    res.json(data)
+})
+
+app.post('/edittemplate', async function (req, res) {
+  // Editar una plantilla de mensajes
+    const template_id = "1433949387528908"
+    const response = await fetch(`https://graph.facebook.com/v18.0/${template_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+        body: JSON.stringify(
+            {
+                "components": [
+                    {
+                        "type": "BODY",
+                        "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue. Bye Bye"
+                    },
+                ],
+            },
+        )
+    })
+    const data = await response.json()
+    console.log("response: ", data)
+    console.log("Plantilla editada")
+    res.json({ "message": "Plantilla editada" })
+})
+
+app.delete('/deletetemplate', async function (req, res) {
+    // Eliminar una plantilla de mensajes
+    const response = await fetch(`https://graph.facebook.com/v18.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates?hsm_id=1433949387528908&name=test_variable`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+    })
+    const data = await response.json()
+    console.log(data)
+    res.json({ "message": "Plantilla eliminada" })
+})
 
 app.post('/wppmessage', async function (req, res) {
     const telefono = req.body.telefono  

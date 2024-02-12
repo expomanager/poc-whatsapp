@@ -1,7 +1,18 @@
 import './App.css';
 import React from 'react';
 
-function App() {
+function App() {  
+  
+  async function deleteTemplate(e) {
+    e.preventDefault();
+    await fetch("/deletetemplate", {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  }
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -19,7 +30,7 @@ function App() {
 
   return (
     <div className='web'>
-      <form onSubmit={handleSubmit} className="App">
+      <form onSubmit={deleteTemplate} className="App">
         <label htmlFor="name">Nombre:</label>
         <input type="text" id="name" name="name" />
         <label htmlFor="numero">Número de celular:</label>
