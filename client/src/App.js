@@ -23,6 +23,35 @@ function App() {
     })
   }
 
+  async function getTemplates(e) {
+    e.preventDefault();
+    await fetch("/gettemplates", {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  }
+
+  async function createTemplate(e) {
+    e.preventDefault();
+    await fetch("/createtemplate", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "name": "test_variable",
+        "components": [
+          {
+            "type": "BODY",
+            "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue. Bye Bye"
+          },
+        ],
+      })
+    })
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     await fetch("/wppmessage", {
@@ -46,6 +75,12 @@ function App() {
         <input type="number" id="telefono" name="telefono" />
         <button type="submit">Submit</button>
       </form>
+      <div className='template'>
+        <button onClick={createTemplate}>Crear plantilla</button>
+        <button onClick={getTemplates}>Obtener plantillas</button>
+        <button onClick={editTemplate}>Editar plantilla</button>
+        <button onClick={deleteTemplate}>Eliminar plantilla</button>
+      </div>
     </div>
   );
 }
