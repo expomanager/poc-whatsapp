@@ -13,6 +13,15 @@ function App() {
     })
   }
 
+  async function editTemplate(e) {
+    e.preventDefault();
+    await fetch("/edittemplate", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,7 +39,7 @@ function App() {
 
   return (
     <div className='web'>
-      <form onSubmit={deleteTemplate} className="App">
+      <form onSubmit={handleSubmit} className="App">
         <label htmlFor="name">Nombre:</label>
         <input type="text" id="name" name="name" />
         <label htmlFor="numero">Número de celular:</label>

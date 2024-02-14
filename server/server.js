@@ -31,8 +31,12 @@ app.post('/webhook', async function(req, res) {
     if(body.object) {
         if(body.entry && body.entry[0].changes && body.entry[0].changes[0].value.messages && body.entry[0].changes[0].value.messages[0].type === "button") {
             const phone_no_id = body.entry[0].changes[0].value.metadata.phone_number_id
-            const from = body.entry[0].changes[0].value.messages[0].from
+            // Mensaje del botón apretado
             const msg_body = body.entry[0].changes[0].value.messages[0].button.text
+            const from = String(body.entry[0].changes[0].value.messages[0].from)
+            // Obtener el número sin el (+)54 9
+            const phone_from = from.slice(3)
+            // Si el botón que apretó decía "OK" envíar una plantilla de agradecimiento
             if (msg_body === "OK") {
                 fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER}/messages`, {
                     method: 'POST',
@@ -43,10 +47,10 @@ app.post('/webhook', async function(req, res) {
                     body: JSON.stringify(
                         {
                             "messaging_product": "whatsapp",
-                            "to": from,
+                            "to": `54${phone_from}`,
                             "type": "template",
                             "template": {
-                                "name": 'welcome_expo',
+                                "name": 'agradecimiento',
                                 "language": {
                                     "code": "es_AR"
                                 },
@@ -54,10 +58,10 @@ app.post('/webhook', async function(req, res) {
                         })
                 })
             }
-            res.sendStatus(200)
-        } else {
-            res.sendStatus(404)
         }
+        res.sendStatus(200)
+    } else {
+        res.sendStatus(404)
     }
 });
 
@@ -77,7 +81,7 @@ app.get('/gettemplates', async function (req, res) {
 
 app.post('/edittemplate', async function (req, res) {
   // Editar una plantilla de mensajes
-    const template_id = "1433949387528908"
+    const template_id = "405973855428138"
     const response = await fetch(`https://graph.facebook.com/v18.0/${template_id}`, {
         method: 'POST',
         headers: {
@@ -148,29 +152,32 @@ app.post('/wppmessage', async function (req, res) {
                 },
             })
     })
-    // Ejemplo de creacion de un template - Plantilla
-    // await fetch(`https://graph.facebook.com/v19.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates`, {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
-    //     },
-    //     body: JSON.stringify(
-    //         {
-    //             "name": "prueba_template",
-    //             "category": "UTILITY",
-    //             "allow_category_change": true,
-    //             "language": "es_AR",
-    //             "components": [
-    //                 {
-    //                     "type": "BODY",
-    //                     "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
-    //                 },
-    //             ],
-    //         },
-    //     )
-    // })
     res.json({ "message": "Mensaje enviado" })
+})
+
+app.post('/createtemplate', async function (req, res) {
+    // Ejemplo de creacion de un template - Plantilla
+    await fetch(`https://graph.facebook.com/v19.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+        body: JSON.stringify(
+            {
+                "name": "prueba_template",
+                "category": "UTILITY",
+                "allow_category_change": true,
+                "language": "es_AR",
+                "components": [
+                    {
+                        "type": "BODY",
+                        "text": "Gracias por hacer la orden con nosotros. Tu orden está en camino. Avisanos cuando llegue."
+                    },
+                ],
+            },
+        )
+    })
 })
 
 app.listen(5000, () => {
