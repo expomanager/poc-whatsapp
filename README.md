@@ -5,11 +5,16 @@
 ### Pasos para correr el proyecto
 
 1. Clonar el repositorio con `git clone https://github.com/expomanager/expo-formulario.git`
-2. Instalar las dependencias con `npm install` de cada carpeta (client y server)
-3. Crear el archivo `.env` dentro de la carpeta server
-4. Correr el comando `npm start` dentro de la carpeta client para correr el front
-5. Correr el comando `npm run dev` dentro de la carpeta client para correr el back
+2. Instalar las dependencias con `npm install` de cada carpeta (*client* y *server*)
+3. Crear el archivo `.env` dentro de la carpeta *server*
+4. Correr el comando `npm start` dentro de la carpeta *client* para correr el front
+5. Correr el comando `npm run dev` dentro de la carpeta *server* para correr el back
 
 
 > [!NOTE]
 > Las variables del archivo .env se encuentran en el Slack en #backend-dev 
+
+### Pasos para correr el túnel de ngrok
+
+1. Entrar a la carpeta *server*
+2. En la terminal correspondiente a esa carpeta, correr los dos comandos que aparecen en la *Documentación Final* en la sección de Webhooks - 3.7
