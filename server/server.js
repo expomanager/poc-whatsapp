@@ -81,7 +81,7 @@ app.get('/gettemplates', async function (req, res) {
 
 app.post('/edittemplate', async function (req, res) {
   // Editar una plantilla de mensajes
-    const template_id = "405973855428138"
+    const template_id = "362144586784061"
     const response = await fetch(`https://graph.facebook.com/v18.0/${template_id}`, {
         method: 'POST',
         headers: {
@@ -107,7 +107,9 @@ app.post('/edittemplate', async function (req, res) {
 
 app.delete('/deletetemplate', async function (req, res) {
     // Eliminar una plantilla de mensajes
-    const response = await fetch(`https://graph.facebook.com/v18.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates?hsm_id=1433949387528908&name=test_variable`, {
+    const template_id = "362144586784061"
+    const template_name = "welcome_expo"
+    const response = await fetch(`https://graph.facebook.com/v18.0/${process.env.WHATSAPP_BUSINESS_ID}/message_templates?hsm_id=${template_id}&name=${template_name}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${process.env.BEARER_TOKEN}`,
@@ -165,7 +167,7 @@ app.post('/createtemplate', async function (req, res) {
         },
         body: JSON.stringify(
             {
-                "name": "prueba_template",
+                "name": "prueba_template_2",
                 "category": "UTILITY",
                 "allow_category_change": true,
                 "language": "es_AR",
